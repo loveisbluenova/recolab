@@ -25,7 +25,7 @@
 						$servername = "localhost";
 						$username = "root";
 						$password = "root";
-						$dbname = "airtable2";
+						$dbname = "recolab";
 						$sql = '';
 
 						// Create connection
@@ -53,7 +53,7 @@
 						// To get this value, look at the Authentication notes in the API docs.
 						// Example: $ curl https://api.airtable.com/v0/appZZ12rVdg6qzyC/foo...
 						// .. where "appZZ12rVdg6qzyC" is the App ID.
-						define ( 'AIRTABLE_APP_ID', 'app6lTUmzLmvZLaSN' );
+						define ( 'AIRTABLE_APP_ID', 'appjZwdG34KPEajCI' );
 						
 						// Airtable API URL.
 						// Default: https://api.airtable.com/v0/
@@ -89,7 +89,7 @@
 
 						$airtable_url = AIRTABLE_API_URL . AIRTABLE_APP_ID;
 							// We're also specifying a table.
-							$airtable_url .= '/locations';
+							$airtable_url .= '/Locations';
 							// And we're specifying a view. The API will honor any filters 
 							// that have been applied to the view, as well as any sort
 							// order that has been applied to it.
@@ -103,7 +103,7 @@
 							// We're also specifying a sort order for the request,
 							// which will override any sort order that has been 
 							// applied on the view.
-							$airtable_url .= '&sortField=name&sortDirection=asc';
+							$airtable_url .= '&sortField=Name&sortDirection=asc';
 
 							curl_setopt( $ch, CURLOPT_URL, $airtable_url );		
 									
@@ -137,31 +137,27 @@
 							}
 
 							$sql = '';
-
+							$status='';
 							foreach ( $airtable_response['records'] as $record ) {
 					
 								// Add each artist to the list, wrapped with a URL to the details page.
 								// Note that we're passing the Airtable-assigned record ID.
 								echo '<li>';
 								echo '<a href="artist.php?id=' . $record['id'] . '">';
-								echo $record['fields']['name'] . '</a>';
+								echo $record['fields']['Name'] . '</a>';
 								echo '</li>';
 
-								$name = str_replace("'","\'",$record['fields']['name']);
-								$organization = implode(",", $record['fields']['organization']);
-								$alternate_name = str_replace("'","\'",$record['fields']['alternate_name']);
-								$transportation = str_replace("'","\'",$record['fields']['transportation']);
-								$description = str_replace("'","\'",$record['fields']['description']);
-								$services = implode(",", $record['fields']['services']);
-								$phones = implode(",", $record['fields']['phones']);
-								$details = implode(",", $record['fields']['details']);
-								$holiday_schedule = implode(",", $record['fields']['holiday_schedule']);
-								$regular_schedule = implode(",", $record['fields']['regular_schedule']);
-								$address = implode(",", $record['fields']['address']);
-								$accessibility_for_disabilities = implode(",", $record['fields']['accessibility_for_disabilities']);
+								$name = str_replace("'","\'",$record['fields']['Name']);
+								$address= str_replace("'","\'",$record['fields']['Address']);
+								$description = str_replace("'","\'",$record['fields']['Description']);
+								$entity = implode(",", $record['fields']['Entity']);
 
-								$sql = "INSERT INTO locations (location_id, name, organization, alternate_name, transportation, latitude, longitude, description, services, phones, details, holiday_schedule, regular_schedule, address, accessibility_for_disabilities)
-								VALUES ( '{$record['id']}', '{$name}', '{$organization}','{$alternate_name}', '{$transportation}', '{$record['fields']['latitude']}', '{$record['fields']['longitude']}', '{$description}', '{$services}', '{$phones}', '{$details}', '{$holiday_schedule}', '{$regular_schedule}', '{$address}', '{$accessibility_for_disabilities}');";
+								foreach ($images as $image) {
+									echo 'This is ' .$image->url."\n";
+								}
+
+								$sql = "INSERT INTO locations (locations_id, name, type, address, description, url, entity, empty)
+								VALUES ( '{$record['id']}', '{$name}', '{$record['fields']['Type']}', '{$address}', '{$description}', '{$record['fields']['URL']}', '{$entity}', '{$record['fields']['Empty']}');";
 
 								if ($conn->query($sql) === TRUE) {
 								    echo "New record created successfully";

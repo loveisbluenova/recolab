@@ -37,11 +37,11 @@
               </a>
             </li>
 
-            <li>
+            <!-- <li>
               <a href="/abouts">
                 <i class="fa  fa-info-circle"></i> <span>About Edit</span>
               </a>
-            </li>
+            </li> -->
 
             <li>
               <a href="/datasync">
